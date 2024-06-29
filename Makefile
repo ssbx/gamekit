@@ -1,4 +1,4 @@
-.PHONY: build install clean
+.PHONY: build install clean uninstall update
 
 build:
 	dune build
@@ -10,7 +10,7 @@ uninstall:
 	opam remove gamekit
 
 update:
-	if [ -n $(GAMEDEVDIR) ]; then cp $(GAMEDEVDIR)/* . ; fi
+	if [ -n $(GAMEDEVDIR) ]; then cp -r $(GAMEDEVDIR)/libs/gamekit/* . ; fi
 
 clean:
 	dune clean
