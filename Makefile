@@ -9,8 +9,5 @@ install:
 uninstall:
 	opam remove gamekit
 
-update:
-	if [ -n $(GAMEDEVDIR) ]; then cp -r $(GAMEDEVDIR)/libs/gamekit/* . ; fi
-
 clean:
 	dune clean
