@@ -5,6 +5,7 @@ module Anims = Anims
 module Timer = Timer
 module Spring = Spring
 module Easing = Easing
+module Fonts = Fonts
 
 include Utils
 
@@ -54,7 +55,7 @@ let rec loop ~renderer ~vsync ~event ~wait_for_events ~needs_redraw ~quit_loop
     ~handle_update ~handle_event ~handle_draw
 
 
-let init ~w ~h ~logical_w ~logical_h ~name =
+let init ~w ~h ~logical_w ~logical_h ~name ~font_dir =
   sdl_try (Sdl.init Sdl.Init.(video + events + audio));
   let audio_chunk_size = 2048 in
   sdl_try (Mixer.open_audio Mixer.default_frequency Mixer.default_format
@@ -75,10 +76,12 @@ let init ~w ~h ~logical_w ~logical_h ~name =
   sdl_ignore (Sdl.set_render_draw_color renderer 0 0 0 255);
   sdl_ignore (Sdl.render_clear renderer);
   Sdl.render_present renderer;
+  Fonts.init font_dir;
   (win, renderer)
 
 let release (w,r) =
   Mixer.close_audio ();
+  Fonts.release ();
   Sdl.destroy_renderer r;
   Sdl.destroy_window w;
   Sdl.quit ()

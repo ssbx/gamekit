@@ -24,6 +24,7 @@
    dune
    (tsdl  (= 0.9.9))
    (tsdl-mixer (= 0.3.2))
+   (tsdl-ttf (= 0.3.2))
  )
  (tags
   (topics "to describe" your project)))
