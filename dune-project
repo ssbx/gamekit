@@ -22,9 +22,9 @@
  (depends
    ocaml
    dune
-   (tsdl  (= 0.9.9))
-   (tsdl-mixer (= 0.3.2))
-   (tsdl-ttf (= 0.3.2))
+   (caml-sdl2  (= 1.0))
+   (caml-sdl2-mixer (= 1.0))
+   (caml-sdl2-ttf (= 1.0))
  )
  (tags
   (topics "to describe" your project)))

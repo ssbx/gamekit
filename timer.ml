@@ -1,3 +1,4 @@
+open CamlSDL2
 
 type job_t = {
   at : int;
@@ -14,7 +15,7 @@ let fire_at ms f =
   jobs_waiting := true
 
 let fire_in ms f =
-  fire_at ((Utils.sdl_get_ticks ()) + ms) f
+  fire_at ((Sdl.get_ticks ()) + ms) f
 
 let rec update_all ticks del = function
   | [] -> del

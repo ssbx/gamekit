@@ -1,5 +1,5 @@
-open Tsdl
-open Tsdl_mixer
+open CamlSDL2
+open CamlSDL2_mixer
 
 module Anims = Anims
 module Timer = Timer
@@ -7,77 +7,87 @@ module Spring = Spring
 module Easing = Easing
 module Fonts = Fonts
 
-include Utils
-
-let ms_wait_60fps = Int32.div 1000l 60l
+let simulate_60fps = Int.div 1000 60
 let ticks : int ref = ref 0
 let delta : int ref = ref 0
 
 
-let emit_events ~event ~handle_event ~wait =
-  let rec consume_events () =
-    handle_event ~event;
-    if Sdl.poll_event (Some event) = true then consume_events () else ()
-  in
-  if wait then (
-    sdl_try (Sdl.wait_event (Some event));
-    consume_events ()
-  ) else if Sdl.poll_event (Some event) = true then (
-    consume_events ()
-  )
+let rec consume_events ~handle_event =
+  (* TODO retained mode style with wait_event *)
+  match Sdl.poll_event () with
+  | None -> ()
+  | Some e ->
+      handle_event ~event:e;
+      consume_events ~handle_event
 
-let rec loop ~renderer ~vsync ~event ~wait_for_events ~needs_redraw ~quit_loop
+let rec loop
+    ~renderer ~vsync ~quit_loop
     ~handle_update ~handle_event ~handle_draw =
-  if vsync <> true then Sdl.delay ms_wait_60fps;
-  let new_ticks = sdl_get_ticks () in
+  if vsync <> true then Sdl.delay ~ms:simulate_60fps;
+  let new_ticks = Sdl.get_ticks () in
   delta := new_ticks - !ticks;
   ticks := new_ticks;
+  (*
   let wait =
     (Timer.length ()) = 0 &&
     (Anims.length ()) = 0 &&
     !needs_redraw = false &&
-    !wait_for_events = true in
+    !wait_for_events = true in*)
   Timer.update !ticks;
   Anims.update !ticks;
-  emit_events ~event ~handle_event ~wait;
+  consume_events ~handle_event;
   handle_update ~ticks:!ticks;
 
-  if !needs_redraw then (
-    sdl_ignore (Sdl.set_render_draw_color renderer 0 0 0 255);
-    sdl_ignore (Sdl.render_clear renderer);
-    handle_draw ~renderer;
-    Sdl.render_present renderer
-  );
+  (*if !needs_redraw then ( *)
+  Sdl.render_clear renderer;
+  handle_draw ~renderer;
+  Sdl.render_present renderer;
+  (* ); *)
   if !quit_loop = true then
     print_endline "bye!"
   else
-    loop ~renderer ~vsync ~event ~wait_for_events ~needs_redraw ~quit_loop
+    loop ~renderer ~vsync ~quit_loop
     ~handle_update ~handle_event ~handle_draw
 
 
 let init ~w ~h ~logical_w ~logical_h ~name ~font_dir =
-  sdl_try (Sdl.init Sdl.Init.(video + events + audio));
-  let audio_chunk_size = 2048 in
-  sdl_try (Mixer.open_audio Mixer.default_frequency Mixer.default_format
-           Mixer.default_channels audio_chunk_size);
 
-  sdl_ignore (Sdl.set_hint Sdl.Hint.render_scale_quality "2");
-  sdl_ignore (Sdl.set_hint Sdl.Hint.render_vsync "1");
+  Sdl.init [`SDL_INIT_VIDEO;`SDL_INIT_EVENTS;`SDL_INIT_AUDIO];
 
-  let w_flags = Sdl.Window.(opengl + resizable) in
-  let win = sdl_get_ok (Sdl.create_window ~w ~h name w_flags) in
-  let r_flags = Sdl.Renderer.(presentvsync + accelerated + targettexture) in
-  let renderer = sdl_get_ok (Sdl.create_renderer ~flags:r_flags win) in
+  Mixer.open_audio
+    ~frequency:Mixer.Default.frequency
+    ~audio_format:Mixer.Default.audio_format
+    ~channels:2
+    ~chunk_size:Mixer.Default.chunk_size;
 
-  sdl_try (Sdl.render_set_scale renderer 4. 3.);
-  sdl_try (Sdl.render_set_logical_size renderer logical_w logical_h);
-  ticks := sdl_get_ticks ();
+  Sdl.set_hint "SDL_HINT_RENDER_SCALE_QUALITY" "2";
+  Sdl.set_hint "SDL_HINT_RENDER_VSYNC" "1";
+
+  let window = Sdl.create_window
+    ~title:name
+    ~x:`centered
+    ~y:`centered
+    ~width:w
+    ~height:h
+    ~flags:[Sdl.WindowFlags.OpenGL;Sdl.WindowFlags.Resizable] in
+
+  let renderer = Sdl.create_renderer
+    ~win:window
+    ~index:(-1)
+    ~flags:
+      [Sdl.RendererFlags.PresentVSync
+      ;Sdl.RendererFlags.Accelerated
+      ;Sdl.RendererFlags.TargetTexture] in
+
+  Sdl.render_set_scale renderer ~scaleX:4. ~scaleY:3.;
+  Sdl.render_set_logical_size renderer ~width:logical_w ~height:logical_h;
+  ticks := Sdl.get_ticks ();
   delta := 0;
-  sdl_ignore (Sdl.set_render_draw_color renderer 0 0 0 255);
-  sdl_ignore (Sdl.render_clear renderer);
+  Sdl.set_render_draw_color renderer ~r:0 ~g:0 ~b:0 ~a:255;
+  Sdl.render_clear renderer;
   Sdl.render_present renderer;
   Fonts.init font_dir;
-  (win, renderer)
+  (window, renderer)
 
 let release (w,r) =
   Mixer.close_audio ();

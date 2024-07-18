@@ -1,3 +1,5 @@
+open CamlSDL2
+
 module Easing = Easing
 
 type anim_t = {
@@ -89,7 +91,7 @@ let create_v2
 
 let start anim_handle =
   List.iter (fun anim ->
-    anim.ticks_start <- Float.of_int (Utils.sdl_get_ticks ());
+    anim.ticks_start <- Float.of_int (Sdl.get_ticks ());
     anim.at_start ();
     anim.at_update anim.pt_start;
   ) anim_handle;

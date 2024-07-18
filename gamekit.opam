@@ -12,8 +12,9 @@ bug-reports: "https://github.com/username/reponame/issues"
 depends: [
   "ocaml"
   "dune" {>= "3.15"}
-  "tsdl" {= "0.9.9"}
-  "tsdl-mixer" {= "0.3.2"}
+  "caml-sdl2" {= "1.0"}
+  "caml-sdl2-mixer" {= "1.0"}
+  "caml-sdl2-ttf" {= "1.0"}
   "odoc" {with-doc}
 ]
 build: [
