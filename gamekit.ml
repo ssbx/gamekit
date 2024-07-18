@@ -54,11 +54,11 @@ let init ~w ~h ~logical_w ~logical_h ~name ~font_dir =
 
   Sdl.init [`SDL_INIT_VIDEO;`SDL_INIT_EVENTS;`SDL_INIT_AUDIO];
 
-  Mixer.open_audio
-    ~frequency:Mixer.Default.frequency
-    ~audio_format:Mixer.Default.audio_format
+  Mix.open_audio
+    ~frequency:Mix.Default.frequency
+    ~audio_format:Mix.Default.audio_format
     ~channels:2
-    ~chunk_size:Mixer.Default.chunk_size;
+    ~chunk_size:Mix.Default.chunk_size;
 
   Sdl.set_hint "SDL_HINT_RENDER_SCALE_QUALITY" "2";
   Sdl.set_hint "SDL_HINT_RENDER_VSYNC" "1";
@@ -90,7 +90,7 @@ let init ~w ~h ~logical_w ~logical_h ~name ~font_dir =
   (window, renderer)
 
 let release (w,r) =
-  Mixer.close_audio ();
+  Mix.close_audio ();
   Fonts.release ();
   Sdl.destroy_renderer r;
   Sdl.destroy_window w;
