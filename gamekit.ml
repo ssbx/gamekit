@@ -52,8 +52,8 @@ let init ~w ~h ~logical_w ~logical_h ~name ~font_dir =
     ~audio_format:Mix.Default.audio_format
     ~channels:2
     ~chunk_size:Mix.Default.chunk_size;
-  Sdl.set_hint "SDL_HINT_RENDER_SCALE_QUALITY" "2";
-  Sdl.set_hint "SDL_HINT_RENDER_VSYNC" "1";
+  Sdl.set_hint "SDL_RENDER_SCALE_QUALITY" "2";
+  Sdl.set_hint "SDL_RENDER_VSYNC" "1";
   let window =
     Sdl.create_window
       ~title:name
