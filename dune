@@ -1,9 +1,4 @@
 (library
  (public_name gamekit)
  (name gamekit)
- (libraries
-   caml-sdl2
-   caml-sdl2-ttf
-   caml-sdl2-mixer
-   ))
-
+ (libraries caml-sdl2 caml-sdl2-ttf caml-sdl2-mixer))
