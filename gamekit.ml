@@ -17,7 +17,7 @@ let rec consume_events ~handle_event =
   match Sdl.poll_event () with
   | None -> ()
   | Some e ->
-      handle_event ~event:e;
+      handle_event e;
       consume_events ~handle_event
 
 let rec loop
