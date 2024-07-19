@@ -46,7 +46,7 @@ let rec loop ~renderer ~vsync ~quit_loop ~handle_update ~handle_event ~handle_dr
 
 let init ~w ~h ~logical_w ~logical_h ~name ~font_dir =
   Sdl.init [ `SDL_INIT_VIDEO; `SDL_INIT_EVENTS; `SDL_INIT_AUDIO ];
-  Mix.init [`MIX_INIT_OGG];
+  Mix.init [ `MIX_INIT_OGG ];
   Mix.open_audio
     ~frequency:Mix.Default.frequency
     ~audio_format:Mix.Default.audio_format
