@@ -1,6 +1,7 @@
 (lang dune 3.15)
 
 (name gamekit)
+(version 1.0)
 
 (generate_opam_files true)
 
