@@ -5,6 +5,7 @@ module Timer = Timer
 module Spring = Spring
 module Easing = Easing
 module Fonts = Fonts
+module Texture2D = Texture2D
 
 let simulate_60fps = Int.div 1000 60
 let ticks : int ref = ref 0
