@@ -1,5 +1,6 @@
 open CamlSDL2
 open CamlSDL2_ttf
+open Shared
 
 let fonts_dir : string ref = ref ""
 let f500 : Ttf.Font.t option ref = ref None
@@ -22,4 +23,17 @@ let init f_dir =
   f500 := Some f
 ;;
 
+let gen_text text =
+  let surf = get_surface text in
+  let w = Sdl.get_surface_width surf
+  and h = Sdl.get_surface_height surf in
+  let tex = Sdl.create_texture_from_surface (rdr ()) surf in
+  Sdl.free_surface surf;
+  ({
+    texture = tex;
+    width = w;
+    height = h;
+  } : Texture2D.t)
+
+;;
 let release () = ()

@@ -6,6 +6,7 @@ module Spring = Spring
 module Easing = Easing
 module Fonts = Fonts
 module Texture2D = Texture2D
+module Shared = Shared
 
 let simulate_60fps = Int.div 1000 60
 let ticks : int ref = ref 0
@@ -82,6 +83,7 @@ let init ~w ~h ~logical_w ~logical_h ~name ~font_dir =
   Sdl.render_clear renderer;
   Sdl.render_present renderer;
   Fonts.init font_dir;
+  Shared.renderer_val := (Some renderer);
   window, renderer
 ;;
 
