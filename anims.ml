@@ -101,6 +101,19 @@ let start anim_handle =
   anims_waiting := true
 ;;
 
+let create_start
+  ~pt_start
+  ~pt_end
+  ~span
+  ~at_update
+  ?(at_end = fun () -> ())
+  ?(at_start = fun () -> ())
+  curve
+  =
+    let a = create ~pt_start ~pt_end ~span ~at_update ~at_end ~at_start curve in
+    start a
+
+
 (*let animate anim int_ticks =*)
 let rec update_all ticks del = function
   | [] -> del
